@@ -1,0 +1,36 @@
+{
+  "name": "node-fauxmo",
+  "version": "0.0.1",
+  "description": "Make fake WeMo devices. Another Node.JS port of fauxmo, borrowing heavily from fauxmojs",
+  "main": "src/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lspiehler/node-fauxmo.git"
+  },
+  "keywords": [
+    "alexa",
+    "nodejs",
+    "node",
+    "javascript",
+    "iot",
+    "raspberry",
+    "pi",
+    "wemo",
+    "fauxmo",
+    "fauxmojs",
+    "node-fauxmo",
+    "arduino"
+  ],
+  "author": "Lyas Spiehler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lspiehler/node-fauxmo/issues"
+  },
+  "homepage": "https://github.com/lspiehler/node-fauxmo#readme"
+}

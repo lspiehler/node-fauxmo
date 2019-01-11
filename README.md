@@ -1,5 +1,5 @@
 # node-fauxmo
-Make fake WeMo devices. Another Node.JS port of fauxmo, borrowing heavily from fauxmojs
+Make fake WeMo devices! Another Node.JS port of fauxmo, borrowing heavily from fauxmojs. This library gives you the ability to easily control anything you'd like from your Alexa enabled devices. You can control an array of relays from a raspberry pi or even start, stop, and get the status of a service on your computer. I've also added the ability to get the status of a "fake device from an external source. Enjoy!"
 
 # Installation
 npm install node-fauxmo
