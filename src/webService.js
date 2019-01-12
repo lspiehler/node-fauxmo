@@ -56,12 +56,10 @@ module.exports.startWebServer = function(fauxMo) {
 									</s:Body>
 								</s:Envelope>`
 						} else if(action=="SetBinaryState") {
-							//console.log('Current state is ' + getState(i));
-							if(state==0) {
-								setState(i, 1);
-							} else {
-								setState(i, 0);
-							}
+							//console.log('Current state is ' + body);
+							let searchstr = body.indexOf('</BinaryState>');
+							let statereq = body.substring(searchstr - 1, searchstr);
+							setState(i, parseInt(statereq));
 							xmlresponse = `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
 								<s:Body>
 									<u:SetBinaryStateResponse xmlns:u="urn:Belkin:service:basicevent:1">
