@@ -1,6 +1,6 @@
 {
   "name": "node-fauxmo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Make fake WeMo devices. Another Node.JS port of fauxmo, borrowing heavily from fauxmojs",
   "main": "src/index.js",
   "directories": {
@@ -32,5 +32,8 @@
   "bugs": {
     "url": "https://github.com/lspiehler/node-fauxmo/issues"
   },
-  "homepage": "https://github.com/lspiehler/node-fauxmo#readme"
+  "homepage": "https://github.com/lspiehler/node-fauxmo#readme",
+  "dependencies": {
+    "ip": "^1.1.5"
+  }
 }

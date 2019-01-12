@@ -2,12 +2,15 @@
 
 const dgram = require('dgram');
 const serial = require('./deviceSerial');
+const util = require('util');
+var ip = require('ip');
+const os = require('os');
 
 let udpServer;
 let ipaddress;
 let devices = [];
 
-let response = function() {
+let response = function(ip) {
 	let deviceresp = [];
 	let responses = [];
 	for(let i = 0; i <= devices.length - 1; i++) {
@@ -16,7 +19,7 @@ let response = function() {
 			'CACHE-CONTROL: max-age=86400',
 			'DATE: Mon, 22 Jun 2015 17:24:01 GMT',
 			'EXT:',
-			'LOCATION: http://' + ipaddress + ':' + devices[i].port + '/setup.xml',
+			'LOCATION: http://' + ip + ':' + devices[i].port + '/setup.xml',
 			'OPT: "http://schemas.upnp.org/upnp/1/0/"; ns=01',
 			'01-NLS: ' + serial(devices[i]) + '',
 			'SERVER: Unspecified, UPnP/1.0, Unspecified',
@@ -48,9 +51,22 @@ let parseHeaders = function(message) {
 	}
 }
 
+let findAddress = function(network) {
+	let interfaces = os.networkInterfaces().Ethernet;
+	for(let i = 0; i <= interfaces.length - 1; i++) {
+		if(ip.cidr(interfaces[i].cidr)==network) {
+			return interfaces[i].address;
+		}
+	}
+}
+
 module.exports.startSSDPServer = function(fauxMo) {
 	devices = fauxMo.devices;
-	ipaddress = fauxMo.ipAddress;
+	if(fauxMo.hasOwnProperty('ipAddress')) {
+		ipaddress = fauxMo.ipAddress;
+	} else {
+		ipaddress = '0.0.0.0';
+	}
 	//console.log('here');
 	udpServer = dgram.createSocket({type: 'udp4'});
 	
@@ -61,10 +77,17 @@ module.exports.startSSDPServer = function(fauxMo) {
 	
 	udpServer.on('message', (msg, rinfo) => {
 		//debug(`<< server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-		//console.log('Search request from ' + rinfo);
+		//console.log('Search request from ' + util.inspect(rinfo));
+		//console.log(ip.cidr(rinfo.address + '/24'));
 		let search = parseHeaders(msg);
 		if(search) {
-			let resp = response();
+			let srcip;
+			if(ipaddress == '0.0.0.0') {
+				srcip = findAddress(ip.cidr(rinfo.address + '/24'));
+			} else {
+				srcip = ipaddress;
+			}
+			let resp = response(srcip);
 			for(let i = 0; i <= resp.length - 1; i++) {
 				//console.log(resp[i].toString());
 				udpServer.send(resp[i], 0, resp[i].length, rinfo.port, rinfo.address);
@@ -80,7 +103,7 @@ module.exports.startSSDPServer = function(fauxMo) {
 			const address = udpServer.address();
 			//debug(`server listening ${address.address}:${address.port}`);
 			udpServer.setMulticastTTL(128); 
-			udpServer.addMembership('239.255.255.250', fauxMo.ipAddress);
+			udpServer.addMembership('239.255.255.250', ipaddress);
 		} catch (err) {
 			//debug('udp server error: %s', err.message);
 		}
@@ -89,7 +112,7 @@ module.exports.startSSDPServer = function(fauxMo) {
 	//debug('binding to port 1900 for ssdp discovery');
 	try {
 		udpServer.bind(1900, function() {
-			udpServer.setMulticastInterface(fauxMo.ipAddress);
+			udpServer.setMulticastInterface(ipaddress);
 		});
 	} catch (err) {
 		//debug('error binding udp server: %s', err.message);

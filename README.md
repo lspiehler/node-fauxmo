@@ -23,7 +23,6 @@ var dev4handler = function(action) {
 
 let fauxMo = new FauxMo(
 {
-	ipAddress: '192.168.1.198',
 	devices: [{
 		name: 'Fake Device 1',
 		port: 11000,
