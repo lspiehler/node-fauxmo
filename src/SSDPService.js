@@ -5,6 +5,7 @@ const serial = require('./deviceSerial');
 const util = require('util');
 const ip = require('ip');
 const os = require('os');
+var moment = require('moment');
 
 let udpServer;
 let ipaddress;
@@ -17,15 +18,15 @@ let response = function(ipaddr) {
 		let resp = new Buffer.from([
 			'HTTP/1.1 200 OK',
 			'CACHE-CONTROL: max-age=86400',
-			'DATE: Mon, 22 Jun 2015 17:24:01 GMT',
+			'DATE: ' + moment.utc(new Date()).format("ddd, DD MMM YYYY HH:mm:ss") + ' GMT',
 			'EXT:',
 			'LOCATION: http://' + ipaddr + ':' + devices[i].port + '/setup.xml',
 			'OPT: "http://schemas.upnp.org/upnp/1/0/"; ns=01',
 			'01-NLS: ' + serial(devices[i]) + '',
 			'SERVER: Unspecified, UPnP/1.0, Unspecified',
 			'X-User-Agent: redsonic',
-			'ST: urn:Belkin:device:**',
-			'USN: uuid:Socket-' + serial(devices[i]) + '::urn:Belkin:device:**'
+			'ST: urn:Belkin:service:basicevent:1',
+			'USN: uuid:Socket-' + serial(devices[i]) + '::urn:Belkin:service:basicevent:1'
 		].join('\r\n') + '\r\n\r\n');
 		responses.push(resp);
 	}
@@ -96,6 +97,7 @@ module.exports.startSSDPServer = function(fauxMo) {
 			if(ipaddress == '0.0.0.0') {
 				srcip = findAddress(getMask(rinfo.address, '255.255.255.0'));
 				//console.log('Search request from ' + util.inspect(rinfo));
+				//console.log(search);
 			} else {
 				srcip = ipaddress;
 			}

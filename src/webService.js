@@ -81,12 +81,105 @@ module.exports.startWebServer = function(fauxMo) {
 					let xml = `<?xml version="1.0"?>
 						<root>
 						  <device>
-							<deviceType>urn:MakerMusings:device:controllee:1</deviceType>
+							<deviceType>urn:Belkin:device:controllee:1</deviceType>
 							<friendlyName>` + devices[i].name + `</friendlyName>
 							<manufacturer>Belkin International Inc.</manufacturer>
-							<modelName>Emulated Socket</modelName>
-							<modelNumber>3.1415</modelNumber>
+							<manufacturerURL>http://www.belkin.com</manufacturerURL>
+							<modelDescription>Belkin Plugin Socket 1.0</modelDescription>
+							<modelName>Socket</modelName>
+							<modelNumber>1.0</modelNumber>
+							<serialNumber>` + serial(devices[i]) + `</serialNumber>
 							<UDN>uuid:Socket-1_0-` + serial(devices[i]) + `</UDN>
+							<macAddress>00000000000` + i + `</macAddress>
+							<firmwareVersion>WeMo_WW_2.00.11143.PVT-OWRT-SNSV2</firmwareVersion>
+							<iconList>
+							  <icon>
+								<mimetype>jpg</mimetype>
+								<width>100</width>
+								<height>100</height>
+								<depth>100</depth>
+								 <url>icon.jpg</url>
+							  </icon>
+							</iconList>
+							<serviceList>
+							  <service>
+								<serviceType>urn:Belkin:service:WiFiSetup:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:WiFiSetup1</serviceId>
+								<controlURL>/upnp/control/WiFiSetup1</controlURL>
+								<eventSubURL>/upnp/event/WiFiSetup1</eventSubURL>
+								<SCPDURL>/setupservice.xml</SCPDURL>
+							  </service>
+							  <service>
+								<serviceType>urn:Belkin:service:timesync:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:timesync1</serviceId>
+								<controlURL>/upnp/control/timesync1</controlURL>
+								<eventSubURL>/upnp/event/timesync1</eventSubURL>
+								<SCPDURL>/timesyncservice.xml</SCPDURL>
+							  </service>
+							  <service>
+								<serviceType>urn:Belkin:service:basicevent:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:basicevent1</serviceId>
+								<controlURL>/upnp/control/basicevent1</controlURL>
+								<eventSubURL>/upnp/event/basicevent1</eventSubURL>
+								<SCPDURL>/eventservice.xml</SCPDURL>
+							  </service>
+							  <service>
+								<serviceType>urn:Belkin:service:firmwareupdate:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:firmwareupdate1</serviceId>
+								<controlURL>/upnp/control/firmwareupdate1</controlURL>
+								<eventSubURL>/upnp/event/firmwareupdate1</eventSubURL>
+								<SCPDURL>/firmwareupdate.xml</SCPDURL>
+							  </service>
+							  <service>
+								<serviceType>urn:Belkin:service:rules:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:rules1</serviceId>
+								<controlURL>/upnp/control/rules1</controlURL>
+								<eventSubURL>/upnp/event/rules1</eventSubURL>
+								<SCPDURL>/rulesservice.xml</SCPDURL>
+							  </service>
+
+							  <service>
+								<serviceType>urn:Belkin:service:metainfo:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:metainfo1</serviceId>
+								<controlURL>/upnp/control/metainfo1</controlURL>
+								<eventSubURL>/upnp/event/metainfo1</eventSubURL>
+								<SCPDURL>/metainfoservice.xml</SCPDURL>
+							  </service>
+
+							  <service>
+								<serviceType>urn:Belkin:service:remoteaccess:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:remoteaccess1</serviceId>
+								<controlURL>/upnp/control/remoteaccess1</controlURL>
+								<eventSubURL>/upnp/event/remoteaccess1</eventSubURL>
+								<SCPDURL>/remoteaccess.xml</SCPDURL>
+							  </service>
+
+							  <service>
+								<serviceType>urn:Belkin:service:deviceinfo:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:deviceinfo1</serviceId>
+								<controlURL>/upnp/control/deviceinfo1</controlURL>
+								<eventSubURL>/upnp/event/deviceinfo1</eventSubURL>
+								<SCPDURL>/deviceinfoservice.xml</SCPDURL>
+							  </service>
+
+							  <service>
+								<serviceType>urn:Belkin:service:smartsetup:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:smartsetup1</serviceId>
+								<controlURL>/upnp/control/smartsetup1</controlURL>
+								<eventSubURL>/upnp/event/smartsetup1</eventSubURL>
+								<SCPDURL>/smartsetup.xml</SCPDURL>
+							  </service>
+
+							  <service>
+								<serviceType>urn:Belkin:service:manufacture:1</serviceType>
+								<serviceId>urn:Belkin:serviceId:manufacture1</serviceId>
+								<controlURL>/upnp/control/manufacture1</controlURL>
+								<eventSubURL>/upnp/event/manufacture1</eventSubURL>
+								<SCPDURL>/manufacture.xml</SCPDURL>
+							  </service>
+
+							</serviceList>
+						   <presentationURL>/pluginpres.html</presentationURL>
 						  </device>
 						</root>`
 					//console.log(xml);
@@ -96,7 +189,8 @@ module.exports.startWebServer = function(fauxMo) {
 					response.end('Hello Node.js Server!');
 				}
 			} else {
-				console.log('Unhandled http ' + request.method + ' request ' + request.url);
+				//console.log('Unhandled http ' + request.method + ' request ' + request.url);
+				//console.log(request.headers);
 				response.end('Hello Node.js Server!');
 			}
 		});

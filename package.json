@@ -1,6 +1,6 @@
 {
   "name": "node-fauxmo",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Make fake WeMo devices. Another Node.JS port of fauxmo, borrowing heavily from fauxmojs",
   "main": "src/index.js",
   "directories": {
@@ -25,7 +25,10 @@
     "fauxmo",
     "fauxmojs",
     "node-fauxmo",
-    "arduino"
+    "arduino",
+	"homebridge",
+	"homebridge-platform-wemo",
+	"siri"
   ],
   "author": "Lyas Spiehler",
   "license": "MIT",
@@ -34,6 +37,7 @@
   },
   "homepage": "https://github.com/lspiehler/node-fauxmo#readme",
   "dependencies": {
-    "ip": "^1.1.5"
+    "ip": "^1.1.5",
+    "moment": "^2.23.0"
   }
 }
