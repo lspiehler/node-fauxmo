@@ -58,3 +58,4 @@ let fauxMo = new FauxMo(
 	]
 });
 ```
+### For more detailed instructions, please see [this article on my blog](https://kernelmanic.com/2019/05/14/control-anything-with-alexa-using-node-js/).
