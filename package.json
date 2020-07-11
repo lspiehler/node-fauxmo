@@ -26,9 +26,9 @@
     "fauxmojs",
     "node-fauxmo",
     "arduino",
-	"homebridge",
-	"homebridge-platform-wemo",
-	"siri"
+    "homebridge",
+    "homebridge-platform-wemo",
+    "siri"
   ],
   "author": "Lyas Spiehler",
   "license": "MIT",

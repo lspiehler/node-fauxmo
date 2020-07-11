@@ -10,6 +10,7 @@ var moment = require('moment');
 let udpServer;
 let ipaddress;
 let devices = [];
+let multicastintset = false;
 
 let response = function(ipaddr) {
 	let deviceresp = [];
@@ -72,6 +73,22 @@ var getMask = function(ipaddr, subnet) {
 	return mask;
 }
 
+var findInterface = function(ipaddr) {
+	let interfaces = os.networkInterfaces();
+	let keys = Object.keys(interfaces);
+	for(let i = 0; i <= keys.length - 1; i++) {
+		for(let j = 0; j <= interfaces[keys[i]].length - 1; j++) {
+			//console.log(interfaces[keys[i]][j]);
+			if(interfaces[keys[i]][j].family=='IPv4'){
+				if(ip.cidrSubnet(interfaces[keys[i]][j].cidr).contains(ipaddr)) {
+					return interfaces[keys[i]][j].address;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 module.exports.startSSDPServer = function(fauxMo) {
 	devices = fauxMo.devices;
 	if(fauxMo.hasOwnProperty('ipAddress')) {
@@ -80,7 +97,7 @@ module.exports.startSSDPServer = function(fauxMo) {
 		ipaddress = '0.0.0.0';
 	}
 	//console.log('here');
-	udpServer = dgram.createSocket({type: 'udp4'});
+	udpServer = dgram.createSocket({type: 'udp4', reuseAddr: true});
 	
 	udpServer.on('error', (err) => {
 		//debug(`server error:\n${err.stack}`);
@@ -91,7 +108,16 @@ module.exports.startSSDPServer = function(fauxMo) {
 		//debug(`<< server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
 		//console.log('Search request from ' + util.inspect(rinfo));
 		//console.log(getMask(rinfo.address, '255.255.255.0'));
+		//console.log(getMask(rinfo.address, '255.255.255.0'));
+		//console.log(findInterface(rinfo.address));
 		let search = parseHeaders(msg);
+		/*if(multicastintset===false) {
+			let intip = findInterface(rinfo.address)
+			if(intip) {
+				multicastintset = true;
+				udpServer.setMulticastInterface(intip);
+			}
+		}*/
 		if(search) {
 			let srcip;
 			if(ipaddress == '0.0.0.0') {
@@ -114,7 +140,7 @@ module.exports.startSSDPServer = function(fauxMo) {
 	
 	udpServer.on('listening', () => {
 		try {
-			const address = udpServer.address();
+			//const address = udpServer.address();
 			//debug(`server listening ${address.address}:${address.port}`);
 			udpServer.setMulticastTTL(128); 
 			//console.log(ipaddress);
@@ -123,6 +149,7 @@ module.exports.startSSDPServer = function(fauxMo) {
 				let keys = Object.keys(interfaces);
 				for(let i = 0; i <= keys.length - 1; i++) {
 					for(let j = 0; j <= interfaces[keys[i]].length - 1; j++) {
+						//console.log(interfaces[keys[i]][j]);
 						if(interfaces[keys[i]][j].family=='IPv4'){
 							udpServer.addMembership('239.255.255.250', interfaces[keys[i]][j].address);
 						}
@@ -137,9 +164,18 @@ module.exports.startSSDPServer = function(fauxMo) {
 	});
 	
 	//debug('binding to port 1900 for ssdp discovery');
-	try {
-		udpServer.bind(1900, ipaddress, function() {
-			if(ipaddress=='0.0.0.0') {
+	//try {
+		udpServer.bind(1900, ipaddress, function(err) {
+			if(err) {
+				console.trace(err);
+			} else {
+				const address = udpServer.address();
+				console.log(`server listening ${address.address}:${address.port}`);
+			}
+			if(ipaddress!='0.0.0.0') {
+				udpServer.setMulticastInterface(ipaddress);
+			}
+			/*if(ipaddress=='0.0.0.0') {
 				let interfaces = os.networkInterfaces();
                                 let keys = Object.keys(interfaces);
                                 for(let i = 0; i <= keys.length - 1; i++) {
@@ -153,10 +189,10 @@ module.exports.startSSDPServer = function(fauxMo) {
 			}
 				//udpServer.setMulticastInterface(ipaddress);
 			} else {
-				udpServer.setMulticastInterface(ipaddress);
-			}
+				udpServer.setMulticastInterface('192.168.1.51');
+			}*/
 		});
-	} catch (err) {
+	//} catch (err) {
 		//debug('error binding udp server: %s', err.message);
-	}
+	//}
 }
